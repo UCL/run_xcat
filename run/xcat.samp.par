@@ -4,13 +4,11 @@ atten_phan_each = 1	# attenuation_coeff_phantom_each_frame (1=save phantom to fi
 act_phan_ave = 0	# activity_phantom_average    (1=save , 0=don't save) see NOTE 1
 atten_phan_ave = 0	# attenuation_coeff_phantom_average  (1=save, 0=don't save) see NOTE 1
 
-#########
-motion_option = 1	# motion_option  (0=beating heart only, 1=respiratory motion only, 2=both motions) see NOTE 2
+motion_option = 0	# motion_option  (0=beating heart only, 1=respiratory motion only, 2=both motions) see NOTE 2
 
-#####################
-out_period = 5		# output_period (SECS) (if <= 0, then output_period=time_per_frame*output_frames)
-time_per_frame = 1	# time_per_frame (SECS) (**IGNORED unless output_period<=0**)
-out_frames = 20		# output_frames (# of output time frames ) --1
+out_period = 1		# output_period (SECS) (if <= 0, then output_period=time_per_frame*output_frames)
+time_per_frame = 0	# time_per_frame (SECS) (**IGNORED unless output_period<=0**)
+out_frames = 1		# output_frames (# of output time frames )
 
 hrt_period = 1			# hrt_period (SECS) (length of beating heart cycle; normal = 1s) see NOTE 3 
 hrt_start_ph_index = 0.0	# hrt_start_phase_index (range=0 to 1; ED=0, ES=0.4) see NOTE 3 
@@ -34,9 +32,9 @@ hrt_t4 = 0.193		# sets the duration from end of quiet phase to reduced filling, 
 resp_period = 5                 # resp_period (SECS) (length of respiratory cycle; normal breathing = 5s) see NOTE 3
 resp_start_ph_index = 0.0	# resp_start_phase_index (range=0 to 1, full exhale= 0.0, full inhale=0.4) see NOTE 3
 max_diaphragm_motion = 2.0	# max_diaphragm_motion  (extent in cm's of diaphragm motion; normal breathing = 2 cm) see NOTE 4
-max_AP_exp = 0 #0.5		# max_AP_expansion  (extent in cm's of the AP expansion of the chest; normal breathing = 1.2 cm) see NOTE 4
-dia_filename = tumor_curve.dat				#name of curve defining diaphragm motion during respiration
-ap_filename = ap_curve.dat     					#name of curve defining chest anterior-posterior motion during respiration
+max_AP_exp = 0.5		# max_AP_expansion  (extent in cm's of the AP expansion of the chest; normal breathing = 1.2 cm) see NOTE 4
+dia_filename = diaphragm_curve.dat	#name of curve defining diaphragm motion during respiration
+ap_filename = ap_curve.dat     		#name of curve defining chest anterior-posterior motion during respiration
 
 hrt_motion_x = 0.0		#hrt_motion_x (extent in cm's of the heart's lateral motion during breathing; default = 0.0 cm)
 hrt_motion_y = 0.5		#hrt_motion_y (extent in cm's of the heart's AP motion during breathing; default = 1.2 cm)
@@ -77,9 +75,11 @@ phantom_long_axis_scale = 1.0		# phantom_long_axis_scale (scales phantom lateral
 phantom_short_axis_scale = 1.0		# phantom_short_axis_scale (scales phantom AP - scales everything including the heart) SEE NOTE 5 
 phantom_height_scale = 1.0		# phantom_height_scale (scales phantom height - scales everything including the heart) SEE NOTE 5
 
-head_cir_scale = 1.0			# head_circumference_scale (scales head radially - scales everything in head) SEE NOTE 5
+head_x_scale = 1.0			# head_x_scale (scales head laterally - scales everything in head) SEE NOTE 5
+head_y_scale = 1.0			# head_y_scale (scales head about AP - scales everything in head) SEE NOTE 5
 head_height_scale = 1.0                 # head_height_scale (scales head height - scales everything in head) SEE NOTE 5
-head_skin_cir_scale = 1.0		# head_skin_circumference_scale (scales head radially - scales only outer skin) SEE NOTE 5
+head_skin_x_scale = 1.0		# head_skin_x_scale (scales head laterally - scales only outer skin) SEE NOTE 5
+head_skin_y_scale = 1.0		# head_skin_y_scale (scales head about AP - scales only outer skin) SEE NOTE 5
 
 torso_long_axis_scale = 1.0		# torso_long_axis_scale (sets torso, chest and abdomen, transverse axis - scales everything including the heart) SEE NOTE 5
 torso_short_axis_scale = 1.0		# torso_short_axis_scale (sets torso, chest and abdomen, AP axis - scales everything including the heart) SEE NOTE 5
@@ -111,7 +111,7 @@ hrt_scale_x = 1.0		# hrt_scale x
 hrt_scale_y = 1.0		# hrt_scale y  
 hrt_scale_z = 1.0		# hrt_scale z  
 
-breast_type = 0		# breast_type (0=supine, 1=prone) 
+breast_type = 1		# breast_type (0=supine, 1=prone) 
 which_breast = 0	# which_breast (0 = none, 1 = both, 2 = right only, 3=left only )
 breast_to_compress = 0	# breast to apply compression (0 = none, 1 = right, 2 = left, 3 = both)
 compression_type = 0	# type of compression (0 = top/bottom, 1 = side to side)
@@ -175,8 +175,8 @@ li_air_flag = 5		# location of air in the large intestine see NOTE 6
 
 thickness_stomach = 0.7	# thickness of stomach wall (cm)
 thickness_esoph = 0.3	# thickness of the esophagus wall (cm)
-thickness_trachea = 0.15	# thickness of the trachea wall (cm)
-use_res = 1		# 0 = use high resolution to calc volumes, 1 = use pixel_width and slice_width below
+thickness_trachea = 0.0	# thickness of the trachea wall (cm)
+use_res = 0		# 0 = use high resolution to calc volumes, 1 = use pixel_width and slice_width below
 
 vol_prostate = 0.0	# set the volume of the prostate; (0 = do not change)
 vol_testes = 0.0	# set the volume of the testes; (0 = do not change)
@@ -208,14 +208,12 @@ vol_trachea = 0.0	# set the volume of the trachea (total); (0 = do not change)
 vol_esoph = 0.0		# set the volume of the esophagus (total); (0 = do not change)
 vol_epidy = 0.0		# set the volume of the epididymus; (0 = do not change)
 
-##############################################
-########################################
-pixel_width = 0.3 # pixel width (cm);  see NOTE 7 
-slice_width = 0.327 # slice width (cm);   
-array_size = 192 # array size 128  
-subvoxel_index = 1 # subvoxel_index (=1,2,3,4 -> 1,8,27,64 subvoxels/voxel, respectively) 
-startslice = 395 # start_slice;  
-endslice = 441 # end_slice; 
+pixel_width = 0.3125	# pixel width (cm);  see NOTE 7 
+slice_width = 0.3125		# slice width (cm);   
+array_size = 256	# array size   
+subvoxel_index = 1	# subvoxel_index (=1,2,3,4 -> 1,8,27,64 subvoxels/voxel, respectively) 
+startslice = 1	# start_slice;  
+endslice = 500		# end_slice; 
 
 d_ZY_rotation = 0	# change in zy_rotation (beta) in deg. (0); see NOTE 8
 d_XZ_rotation = 0	# change in xz_rotation ( phi) in deg. (0); 
@@ -226,98 +224,98 @@ Z_tr = 0.0	# z translation in mm ;
 
 activity_unit = 0	# activity units (1= scale by voxel volume (multiply activity value times pixel_width * pixel_width * slice_width; 0= don't scale) 
 
-myoLV_act = 2897.981144		# hrt_myoLV_act - activity in left ventricle myocardium
-myoRV_act = 2897.981144		# hrt_myoRV_act - activity in right ventricle myocardium
-myoLA_act = 2897.981144		# hrt_myoLA_act - activity in left atrium myocardium
-myoRA_act = 2897.981144		# hrt_myoRA_act - activity in right atrium myocardium
-bldplLV_act = 2897.981144		# hrt_bldplLV_act - activity in left ventricle chamber (blood pool)
-bldplRV_act = 2897.981144		# hrt_bldplRV_act - activity in right ventricle chamber (blood pool)
-bldplLA_act = 2897.981144		# hrt_bldplLA_act - activity in left atria chamber (blood pool)
-bldplRA_act = 2897.981144		# hrt_bldplRA_act - activity in right atria chamber (blood pool)
+myoLV_act = 75		# hrt_myoLV_act - activity in left ventricle myocardium
+myoRV_act = 75		# hrt_myoRV_act - activity in right ventricle myocardium
+myoLA_act = 75		# hrt_myoLA_act - activity in left atrium myocardium
+myoRA_act = 75		# hrt_myoRA_act - activity in right atrium myocardium
+bldplLV_act = 2		# hrt_bldplLV_act - activity in left ventricle chamber (blood pool)
+bldplRV_act = 2		# hrt_bldplRV_act - activity in right ventricle chamber (blood pool)
+bldplLA_act = 2		# hrt_bldplLA_act - activity in left atria chamber (blood pool)
+bldplRA_act = 2		# hrt_bldplRA_act - activity in right atria chamber (blood pool)
 
-coronary_art_activity = 2452.062938			# artery_activity;
-coronary_vein_activity = 2452.062938			# vein_activity;
+coronary_art_activity = 2	# coronary_art_activity - activity in the coronary arteries
+coronary_vein_activity = 2	# coronary_vein_activity - activity in the coronary veins
 
 valve_thickness = 0.1		# thickness of the AV valves (cm);
 
-body_activity = 315.2645343			# body_activity (background activity);
-skin_activity = 1332.266526			# skin_activity (used if skin_thickness is > 0)
+body_activity = 2		# body_activity (background activity);
+skin_activity = 2		# skin_activity (used if skin_thickness is > 0)
 rbreast_activity = 2		# right breast activity;
 lbreast_activity = 2		# left breast activity;
-muscle_activity = 1176.642192			# muscle activity;
-brain_activity = 2			# brain activity;
-sinus_activity = 2			# sinus activity;
-liver_activity = 3800.588409		# liver_activity;
-gall_bladder_activity = 0	# gall_bladder_activity;
-r_lung_activity = 1254.625912			# right_lung_activity;
-l_lung_activity = 1611.933201			# left_lung_activity;
-esophagus_activity = 2037.932443		# esophagus_activity;
-esophagus_cont_activity = 2037.932443	# esophagus_contents_activity
-laryngopharynx_activity = 2		# laryngopharynx_activity
-larynx_activity = 2			# larynx_activity
-st_wall_activity = 916.0909472		# st_wall_activity;  (stomach wall)
-st_cnts_activity = 916.0909472		# st_cnts_activity;   (stomach contents)
-pancreas_activity = 0		# pancreas_activity;
+muscle_activity = 2		# muscle activity;
+brain_activity = 2		# brain activity;
+sinus_activity = 2		# sinus activity;
+liver_activity = 75.0		# liver_activity;
+gall_bladder_activity = 60	# gall_bladder_activity;
+r_lung_activity = 4		# right_lung_activity;
+l_lung_activity = 4             # left_lung_activity;
+esophagus_activity = 50		# esophagus_activity;
+esophagus_cont_activity = 30	# esophagus_contents_activity
+laryngopharynx_activity = 2	# laryngopharynx_activity
+larynx_activity = 2		# larynx_activity
+st_wall_activity = 2		# st_wall_activity;  (stomach wall)
+st_cnts_activity = 2		# st_cnts_activity;   (stomach contents)
+pancreas_activity = 2		# pancreas_activity;
 r_kidney_cortex_activity = 75	# right_kidney_cortex_activity;
 r_kidney_medulla_activity = 75	# right_kidney_medulla_activity;
 l_kidney_cortex_activity = 75	# left_kidney_cortex_activity;
 l_kidney_medulla_activity = 75	# left_kidney_medulla_activity;
 adrenal_activity = 2		# adrenal_activity;
 r_renal_pelvis_activity = 2	# right_renal_pelvis_activity;
-l_renal_pelvis_activity = 2	# left_renal_pelvis_activity;
-spleen_activity = 2085.502678		# spleen_activity;
-rib_activity = 2006.445244			# rib_activity;
-cortical_bone_activity = 2044.798398	# cortical_bone_activity;
-spine_activity = 2190.102163			# spine_activity;
-spinal_cord_activity = 2151.803664	# spinal_cord_activity;
-bone_marrow_activity = 2176.219582	# bone_marrow_activity;
-art_activity = 2452.062938			# artery_activity;
-vein_activity = 2452.062938			# vein_activity;
+l_renal_pelvis_activity = 2     # left_renal_pelvis_activity;
+spleen_activity = 75		# spleen_activity;
+rib_activity = 5		# rib_activity;
+cortical_bone_activity = 5	# cortical_bone_activity;
+spine_activity = 6		# spine_activity;
+spinal_cord_activity = 2	# spinal_cord_activity;
+bone_marrow_activity = 2	# bone_marrow_activity;
+art_activity = 2		# artery_activity;
+vein_activity = 2		# vein_activity;
 bladder_activity = 2		# bladder_activity;
 prostate_activity = 30		# prostate_activity;
-asc_li_activity = 0			# ascending_large_intest_activity;
-trans_li_activity = 0		# transcending_large_intest_activity;
-desc_li_activity = 0		# desc_large_intest_activity;
-sm_intest_activity = 0		# small_intest_activity;
-rectum_activity = 0			# rectum_activity;
-sem_activity = 0			# sem_vess_activity;
-vas_def_activity = 0		# vas_def_activity;
-test_activity = 0			# testicular_activity;
-penis_activity = 0			# penis_activity
-epididymus_activity = 0		# epididymus_activity;
-ejac_duct_activity = 0		# ejaculatory_duct_activity;
-pericardium_activity = 2897.981144	# pericardium activity;
-cartilage_activity = 1163.322521		# cartilage activity;
-intest_air_activity = 0		# activity of intestine contents (air); 
-ureter_activity = 0		# ureter activity; 
-urethra_activity = 0		# urethra activity; 
-lymph_activity = 0		# lymph normal activity; 
-lymph_abnormal_activity = 0	# lymph abnormal activity; 
-trach_bronch_activity = 0	# trachea_bronchi_activity;
-airway_activity = 0		# airway tree activity
-uterus_activity = 0		# uterus_activity;
-vagina_activity = 0		# vagina_activity;
-right_ovary_activity = 0	# right_ovary_activity;
-left_ovary_activity = 0		# left_ovary_activity;
-fallopian_tubes_activity = 0	# fallopian tubes_activity;
-parathyroid_activity = 315.2645343		# thyroid_activity;
-thyroid_activity = 315.2645343		# thyroid_activity;
-thymus_activity = 315.2645343			# thymus_activity;
+asc_li_activity = 2		# ascending_large_intest_activity;
+trans_li_activity = 2		# transcending_large_intest_activity;
+desc_li_activity = 2		# desc_large_intest_activity;
+sm_intest_activity = 2		# small_intest_activity;
+rectum_activity = 2		# rectum_activity;
+sem_activity = 2		# sem_vess_activity;
+vas_def_activity = 2		# vas_def_activity;
+test_activity = 2		# testicular_activity;
+penis_activity = 2		# penis_activity
+epididymus_activity = 2		# epididymus_activity;
+ejac_duct_activity = 2		# ejaculatory_duct_activity;
+pericardium_activity = 2     	# pericardium activity;
+cartilage_activity = 2		# cartilage activity;
+intest_air_activity = 2.0	# activity of intestine contents (air); 
+ureter_activity = 2.0		# ureter activity; 
+urethra_activity = 2.0		# urethra activity; 
+lymph_activity = 2.0		# lymph normal activity; 
+lymph_abnormal_activity = 2.0	# lymph abnormal activity; 
+trach_bronch_activity = 4.0	# trachea_bronchi_activity;
+airway_activity = 2.0		# airway tree activity
+uterus_activity = 60		# uterus_activity;
+vagina_activity = 50		# vagina_activity;
+right_ovary_activity = 40	# right_ovary_activity;
+left_ovary_activity = 30	# left_ovary_activity;
+fallopian_tubes_activity = 20	# fallopian tubes_activity;
+parathyroid_activity = 2	# parathyroid_activity;
+thyroid_activity = 2		# thyroid_activity;
+thymus_activity = 2		# thymus_activity;
 salivary_activity = 2		# salivary_activity;
 pituitary_activity = 2		# pituitary_activity;
 eye_activity = 2		# eye_activity;
 lens_activity = 2		# eye_lens_activity;
-lesn_activity = 2000		# activity for heart lesion, plaque, or spherical lesion
+lesn_activity = 2		# activity for heart lesion, plaque, or spherical lesion
 
-Corpus_Callosum_act = 8		# activity of Corpus_Callosum
-Caudate_act = 16			# activity of Caudate
+Corpus_Callosum_act = 8	# activity of Corpus_Callosum
+Caudate_act = 16		# activity of Caudate
 Internal_capsule_act = 8	# activity of Internal_capsule
-Putamen_act = 16			# activity of Putamen
+Putamen_act = 16		# activity of Putamen
 Globus_pallidus_act = 16	# activity of Globus_pallidus
-Thalamus_act = 8			# activity of Thalamus
-Fornix_act = 8				# activity of Fornix
+Thalamus_act = 8		# activity of Thalamus
+Fornix_act = 8			# activity of Fornix
 Anterior_commissure_act = 8	# activity of Anterior_commissure
-Amygdala_act = 16			# activity of Amygdala
+Amygdala_act = 16		# activity of Amygdala
 Hippocampus_act = 16		# activity of Hippocampus
 Lateral_ventricle_act = 8	# activity of Lateral_ventricle
 Third_ventricle_act = 8		# activity of Third_ventricle
@@ -334,16 +332,16 @@ Pons_act = 8				# activity of Pons
 Superior_cerebellar_peduncle_act = 8	# activity of Superior_cerebellar_peduncle
 Middle_cerebellar_peduncle_act = 8	# activity of Middle_cerebellar_peduncle
 Substantia_nigra_act = 16		# activity of Substantia_nigra
-Medulla_act = 8					# activity of Medulla
+Medulla_act = 8			# activity of Medulla
 Medullary_pyramids_act = 8		# activity of Medullary_pyramids
 Inferior_olive_act = 8			# activity of Inferior_olive
-Tegmentum_of_midbrain_act = 8	# activity of Tegmentum_of_midbrain
-Midbrain_act = 8				# activity of Midbrain
-cerebellum_act = 8			# activity of cerebellum
+Tegmentum_of_midbrain_act = 8		# activity of Tegmentum_of_midbrain
+Midbrain_act = 8			# activity of Midbrain
+cerebellum_act = 8		# activity of cerebellum
 white_matter_act = 8		# activity of remaining white matter 
 grey_matter_act = 16		# activity of remaining grey matter 
 
-energy  = 511	# radionuclide energy in keV (range 1 - 40MeV, increments of 0.5 keV) ; for attn. map only
+energy  = 140	# radionuclide energy in keV (range 1 - 40MeV, increments of 0.5 keV) ; for attn. map only
 atten_table_filename= atten_table.dat   # for attenuation data calculation
 
 #--------------------Regional Heart Motion Defect---------------------------
@@ -363,15 +361,15 @@ border_zone_radial = 5		# radial width (in terms of number of control points) of
 #--------------------------------------------------------------------------
 
 #---------------------Spherical lesion parameters--------------------------SEE NOTE 10
-x_location = 50		# x coordinate (pixels) to place lesion 50
-y_location = 50		# y coordinate (pixels) to place lesion 35
-z_location = 40			# z coordinate (pixels) to place lesion 40 
+x_location = 102		# x coordinate (pixels) to place lesion
+y_location = 124		# y coordinate (pixels) to place lesion 
+z_location = 26			# z coordinate (pixels) to place lesion 
 lesn_diameter = 10.0		# Diameter of lesion (mm)
 tumor_motion_flag = 0		# Sets tumor motion (0 = default motion based on lungs, 1 = motion defined by user curve below)
-tumor_motion_filename = tumor_curve_2.dat		# Name of user defined motion curve for tumor
+tumor_motion_filename = tumor_curve.dat		# Name of user defined motion curve for tumor
 #--------------------------------------------------------------------------
 
-#---------------------Heart plaque parameters------------------------------SEE NOTE 11 
+#---------------------Heart plaque parameters------------------------------SEE NOTE 11
 p_center_v = 0.2		# plaque center along the length of the artery (between 0 and 1)
 p_center_u = 0.5		# plaque center along the circumference of the artery (between 0 and 1)
 p_height = 1.0			# plaque thickness in mm.
