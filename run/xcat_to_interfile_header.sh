@@ -1,20 +1,36 @@
 #!/bin/bash
 
+#runs xcat on samppar config file with output to path
 run_xcat()
 {
     #store current path
     TEMPPATH=$(pwd)
     
+    #check if path uses . $3=$SAMPPARPATH $5=$OUTPUTPATH
+    TEMPSAMPPARPATH=$3
+    TEMPOUTPUTPATH=$5
+    
+    if [ $TEMPSAMPPARPATH == "./" ]
+    then
+        TEMPSAMPPARPATH=$(pwd)"/"
+    fi
+    
+    if [ $TEMPOUTPUTPATH == "./" ]
+    then
+        TEMPOUTPUTPATH=$(pwd)"/"
+    fi
+    
     #moves to xcatpath $1=$XCATPATH
     cd $1
     
-    #runs xcat $2=$XCAT $3=$SAMPPARPATH $4=$SAMPPAR $5=$OUTPUTPATH $6=$PREFIX
-    "./"$2 $3$4 $5$6
+    #runs xcat $2=$XCAT $4=$SAMPPAR $6=$PREFIX
+    "./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
     
     #reset enviroment
     cd $TEMPPATH
 }
 
+#construct what is the same for every interfile header
 generate_general_header()
 {
     #generic parts of interfile header
@@ -53,6 +69,7 @@ generate_general_header()
     echo $HEADERORIENTATION$HEADERROTATION$HEADERMATRIXSIZE1$HEADERSCALINGFACTOR1$HEADERMATRIXSIZE2$HEADERSCALINGFACTOR2$HEADERMATRIXSIZE3$HEADERSCALINGFACTOR3$HEADEREND
 }
 
+#output header files for each image both activity and attenuation
 output_headers()
 {
     #to be appended to file names $4=$PREFIX
