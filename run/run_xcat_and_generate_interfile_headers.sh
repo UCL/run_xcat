@@ -11,29 +11,15 @@ run_xcat()
     #store current path
     TEMPPATH=$(pwd)
     
-    #check if path uses . $3=$SAMPPARPATH $5=$OUTPUTPATH
-    TEMPSAMPPARPATH=$3
-    TEMPOUTPUTPATH=$5
-    
-    if [ $TEMPSAMPPARPATH == "./" ]
-    then
-        TEMPSAMPPARPATH=$(pwd)"/"
-    fi
-    
-    if [ $TEMPOUTPUTPATH == "./" ]
-    then
-        TEMPOUTPUTPATH=$(pwd)"/"
-    fi
-    
     #moves to xcatpath $1=$XCATPATH
     cd $1
     
-    #runs xcat $2=$XCAT $4=$SAMPPAR $6=$PREFIX
+    #runs xcat $2=$XCAT $3=$SAMPPARPATH $4=$SAMPPAR $5=$OUTPUTPATH $6=$PREFIX
     if [[ $(uname -r) =~ Microsoft$ ]]
     then # LINUX SUBSYSTEM ON WINDOWS
-        "./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
+        $(pwd)"/"$2 $(wslpath -w $3$4) $(wslpath -w $5$6)"/"
     else # MACOS + STANDARD LINUX
-        "./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
+        $(pwd)"/"$2 $3$4 $5$6
     fi
     
     #reset enviroment
@@ -112,7 +98,7 @@ main()
     DEBUG=false #checks to see if xcat should be run
     
     #user variables
-    XCATPATH="./" #path to xcat directory
+    XCATPATH=$(pwd) #path to xcat directory
     
     if [[ $(uname -r) =~ Microsoft$ ]]
     then # LINUX SUBSYSTEM ON WINDOWS
@@ -126,9 +112,9 @@ main()
         fi
     fi
     
-    SAMPPARPATH="./" #path to xcat config file
+    SAMPPARPATH=$(pwd) #path to xcat config file
     SAMPPAR="general.samp.par" #xcat config file
-    OUTPUTPATH="./" #path to output
+    OUTPUTPATH=$(pwd) #path to output
     PREFIX="" #prefix for xcat output
     
     ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
@@ -204,6 +190,11 @@ main()
             fi
         fi
     fi
+    
+    #create full paths
+    XCATPATH=${XCATPATH/"./"/$(pwd)"/"}
+    SAMPPARPATH=${SAMPPARPATH/"./"/$(pwd)"/"}
+    OUTPUTPATH=${OUTPUTPATH/"./"/$(pwd)"/"}
     
     #move to output
     cd $OUTPUTPATH
