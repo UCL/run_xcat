@@ -31,11 +31,11 @@ run_xcat()
     #runs xcat $2=$XCAT $4=$SAMPPAR $6=$PREFIX
     if [[ $(uname -r) =~ Microsoft$ ]]
     then # LINUX SUBSYSTEM ON WINDOWS
-    	"./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
-	else # MACOS + STANDARD LINUX
-	"./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
-	fi
-
+        "./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
+    else # MACOS + STANDARD LINUX
+        "./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
+    fi
+    
     #reset enviroment
     cd $TEMPPATH
 }
@@ -53,17 +53,17 @@ generate_general_header()
     HEADERMATRIXSIZE3="\nmatrix axis label [3] := z\n!matrix size [3] := "
     HEADERSCALINGFACTOR3="\nscaling factor (mm/pixel) [3] := "
     HEADEREND="\nnumber of time frames := 1\n!END OF INTERFILE :="
-
+    
     #aquires variables from xcat config file and multiplied by 10 are being converted from cm in the xcat config file to mm for the interfile header $1=$OUTPUTPATH$SAMPPAR
     ARRAYSIZE=$(echo $(grep "array_size = " $1) | cut -d' ' -f3)
     PIXELWIDTH=$(echo "$(echo $(grep "pixel_width = " $1) | cut -d' ' -f3)*10" | bc -l)
     ENDSLICE=$(echo $(grep "endslice = " $1) | cut -d' ' -f3)
     STARTSLICE=$(echo $(grep "startslice = " $1) | cut -d' ' -f3)
     SLICEWIDTH=$(echo "$(echo $(grep "slice_width = " $1) | cut -d' ' -f3)*10" | bc -l)
-
+    
     #number of slices
     MATRIXSIZE3=$(echo "($ENDSLICE-$STARTSLICE)+1" | bc -l)
-
+    
     #appending variables to generic header parts of interfile header $2=$ORIENTATION $3=$ROTATION
     HEADERORIENTATION=$HEADERORIENTATION$2
     HEADERROTATION=$HEADERROTATION$3
@@ -116,16 +116,17 @@ main()
     
     if [[ $(uname -r) =~ Microsoft$ ]]
     then # LINUX SUBSYSTEM ON WINDOWS
-    	XCAT="dxcat2_windows_64bit.exe"else
+        XCAT="dxcat2_windows_64bit.exe"
+    else
         if [[ "$OSTYPE" == "darwin"* ]]
         then # MACOS
             XCAT="dxcat2"
         else # STANDARD LINUX
             XCAT="dxcat2_linux_64bit"
         fi
-	fi
-	
-	SAMPPARPATH="./" #path to xcat config file
+    fi
+    
+    SAMPPARPATH="./" #path to xcat config file
     SAMPPAR="general.samp.par" #xcat config file
     OUTPUTPATH="./" #path to output
     PREFIX="" #prefix for xcat output
