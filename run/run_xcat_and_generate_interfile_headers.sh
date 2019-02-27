@@ -29,13 +29,13 @@ run_xcat()
     cd $1
     
     #runs xcat $2=$XCAT $4=$SAMPPAR $6=$PREFIX
-	if [[ $(uname -r) =~ Microsoft$ ]]
-	then # LINUX SUBSYSTEM ON WINDOWS
-		"./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
+    if [[ $(uname -r) =~ Microsoft$ ]]
+    then # LINUX SUBSYSTEM ON WINDOWS
+    	"./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
 	else # MACOS + STANDARD LINUX
-		"./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
+	"./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
 	fi
-    
+
     #reset enviroment
     cd $TEMPPATH
 }
@@ -114,13 +114,12 @@ main()
     #user variables
     XCATPATH="./" #path to xcat directory
     
-	if [[ $(uname -r) =~ Microsoft$ ]]
-	then # LINUX SUBSYSTEM ON WINDOWS
-		XCAT="dxcat2_windows_64bit.exe"
-	else
+    if [[ $(uname -r) =~ Microsoft$ ]]
+    then # LINUX SUBSYSTEM ON WINDOWS
+    	XCAT="dxcat2_windows_64bit.exe"else
         if [[ "$OSTYPE" == "darwin"* ]]
         then # MACOS
-            XCAT="dxcat2_macos_64bit"
+            XCAT="dxcat2"
         else # STANDARD LINUX
             XCAT="dxcat2_linux_64bit"
         fi
