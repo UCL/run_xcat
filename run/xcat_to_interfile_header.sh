@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Copyright University College London 2019
+#Author: Alexander Whitehead, Institute of Nuclear Medicine, UCL
+#Contributor: Elise Emond, Institute of Nuclear Medicine, UCL
+#For internal research only.
+
 #runs xcat on samppar config file with output to path
 run_xcat()
 {
@@ -24,7 +29,12 @@ run_xcat()
     cd $1
     
     #runs xcat $2=$XCAT $4=$SAMPPAR $6=$PREFIX
-    "./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
+	if [[ $(uname -r) =~ Microsoft$ ]]
+	then # LINUX SUBSYSTEM ON WINDOWS
+		"./"$2 $(wslpath -w $TEMPSAMPPARPATH$4) $(wslpath -w $TEMPOUTPUTPATH$6)"/"
+	else # MACOS + STANDARD LINUX
+		"./"$2 $TEMPSAMPPARPATH$4 $TEMPOUTPUTPATH$6
+	fi
     
     #reset enviroment
     cd $TEMPPATH
@@ -81,6 +91,8 @@ output_headers()
     
     i=1 #loop iterator
     END=$2 #loop to output $2=$OUTPUT
+	
+	echo $2
     
     while [ $i -le $END ]
     do
@@ -99,133 +111,94 @@ output_headers()
 
 main()
 {
-    #if no arguments
-    if [ $# -lt 1 ]
-    then
-        DEBUG=false #checks to see if xcat should be run
-        
-        #user variables
-        XCATPATH="./" #path to xcat directory
-        XCAT="dxcat2_linux_64bit" #xcat executable
-        SAMPPARPATH="./" #path to xcat config file
-        SAMPPAR="xcat.samp.par" #xcat config file
-        OUTPUTPATH="./" #path to output
-        PREFIX="" #prefix for xcat output
-        
-        ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-        ROTATION="prone" #rotation of patient prone|supine|other
-    else
-        #if debug
-        if [ $1 == "-t" -o $1 == "--test" ]
-        then
-            DEBUG=true #checks to see if xcat should be run
-            OUTPUT=1 #checks to see if xcat should be run
-        else
-            #if only output headers
-            if [ $1 == "-o" -o $1 == "--output" ]
-            then
-                #if output is less than 2
-                if [ $2 -lt 2 ]
-                then
-                    echo "Output must be greater then 1. Run with -t to Output 1."
-                    exit
-                fi
-                
-                DEBUG=true #checks to see if xcat should be run
-                OUTPUT=$2 #checks to see if xcat should be run
-            else
-                DEBUG=false #checks to see if xcat should be run
-            fi
+    DEBUG=false #checks to see if xcat should be run
+    
+    #user variables
+    XCATPATH="./" #path to xcat directory
+    
+	if [[ $(uname -r) =~ Microsoft$ ]]
+	then # LINUX SUBSYSTEM ON WINDOWS
+		XCAT="dxcat2_windows_64bit.exe"
+	else
+        if [[ "$OSTYPE" == "darwin"* ]]
+        then # MACOS
+            XCAT="dxcat2_macos_64bit"
+        else # STANDARD LINUX
+            XCAT="dxcat2_linux_64bit"
         fi
+	fi
+	
+	SAMPPARPATH="./" #path to xcat config file
+    SAMPPAR="general.samp.par" #xcat config file
+    OUTPUTPATH="./" #path to output
+    PREFIX="" #prefix for xcat output
+    
+    ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
+    ROTATION="prone" #rotation of patient prone|supine|other
+    
+    #if debug
+    if [ $1 == "-t" -o $1 == "--test" ]
+    then
+        DEBUG=true #checks to see if xcat should be run
+        OUTPUT=1 #number of output files
         
-        #if not debug
-        if [ $DEBUG = false ]
+        if [ $# -gt 3 ]
         then
             #user variables
-            XCAT=$(echo $1 | rev | cut -d'/' -f1 | rev) #xcat executable
-            XCATPATH=${1//$XCAT/} #path to xcat directory
-            SAMPPAR=$(echo $2 | rev | cut -d'/' -f1 | rev) #xcat config file
-            SAMPPARPATH=${2//$SAMPPAR/} #path to xcat config file
-            PREFIX=$(echo $3 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
-            OUTPUTPATH=${3//$PREFIX/} #path to output
+            XCAT=$(echo $2 | rev | cut -d'/' -f1 | rev) #xcat executable
+            XCATPATH=${2//$XCAT/} #path to xcat directory
+            SAMPPAR=$(echo $3 | rev | cut -d'/' -f1 | rev) #xcat config file
+            SAMPPARPATH=${3//$SAMPPAR/} #path to xcat config file
+            PREFIX=$(echo $4 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
+            OUTPUTPATH=${4//$PREFIX/} #path to output
             
             #if orientation and rotation arguments are given
+            if [ $# -gt 5 ]
+            then
+                ORIENTATION=$5 #orientation of patient head_in|feet_in|other
+                ROTATION=$6 #rotation of patient prone|supine|other
+            fi
+        fi
+    else
+        #if only output headers
+        if [ $1 == "-o" -o $1 == "--output" ]
+        then
+            DEBUG=true #checks to see if xcat should be run
+            OUTPUT=$2 #number of output files
+            
             if [ $# -gt 4 ]
             then
-                ORIENTATION=$4 #orientation of patient head_in|feet_in|other
-                ROTATION=$5 #rotation of patient prone|supine|other
-            else
-                ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-                ROTATION="prone" #rotation of patient prone|supine|other
+                #user variables
+                XCAT=$(echo $3 | rev | cut -d'/' -f1 | rev) #xcat executable
+                XCATPATH=${3//$XCAT/} #path to xcat directory
+                SAMPPAR=$(echo $4 | rev | cut -d'/' -f1 | rev) #xcat config file
+                SAMPPARPATH=${4//$SAMPPAR/} #path to xcat config file
+                PREFIX=$(echo $5 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
+                OUTPUTPATH=${5//$PREFIX/} #path to output
+                
+                #if orientation and rotation arguments are given
+                if [ $# -gt 6 ]
+                then
+                    ORIENTATION=$6 #orientation of patient head_in|feet_in|other
+                    ROTATION=$7 #rotation of patient prone|supine|other
+                fi
             fi
         else
-            #if not only output headers
-            if [ $OUTPUT -lt 2 ]
+            if [ $# -gt 2 ]
             then
-                #if no arguments
-                if [ $# -lt 2 ]
+                #user variables
+                XCAT=$(echo $1 | rev | cut -d'/' -f1 | rev) #xcat executable
+                XCATPATH=${1//$XCAT/} #path to xcat directory
+                SAMPPAR=$(echo $2 | rev | cut -d'/' -f1 | rev) #xcat config file
+                SAMPPARPATH=${2//$SAMPPAR/} #path to xcat config file
+                PREFIX=$(echo $3 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
+                OUTPUTPATH=${3//$PREFIX/} #path to output
+                
+                #if orientation and rotation arguments are given
+                if [ $# -gt 4 ]
                 then
-                    #user variables
-                    XCATPATH="./" #path to xcat directory
-                    XCAT="dxcat2_linux_64bit" #xcat executable
-                    SAMPPARPATH="./" #path to xcat config file
-                    SAMPPAR="xcat.samp.par" #xcat config file
-                    OUTPUTPATH="./" #path to output
-                    PREFIX="" #prefix for xcat output
-                    
-                    ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-                    ROTATION="prone" #rotation of patient prone|supine|other
-                else
-                    #user variables
-                    XCAT=$(echo $2 | rev | cut -d'/' -f1 | rev) #xcat executable
-                    XCATPATH=${2//$XCAT/} #path to xcat directory
-                    SAMPPAR=$(echo $3 | rev | cut -d'/' -f1 | rev) #xcat config file
-                    SAMPPARPATH=${3//$SAMPPAR/} #path to xcat config file
-                    PREFIX=$(echo $4 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
-                    OUTPUTPATH=${4//$PREFIX/} #path to output
-                    
-                    #if orientation and rotation arguments are given
-                    if [ $# -gt 5 ]
-                    then
-                        ORIENTATION=$5 #orientation of patient head_in|feet_in|other
-                        ROTATION=$6 #rotation of patient prone|supine|other
-                    else
-                        ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-                        ROTATION="prone" #rotation of patient prone|supine|other
-                    fi
-                fi
-            else
-                #if no arguments
-                if [ $# -lt 3 ]
-                then
-                    #user variables
-                    XCATPATH="./" #path to xcat directory
-                    XCAT="dxcat2_linux_64bit" #xcat executable
-                    SAMPPARPATH="./" #path to xcat config file
-                    SAMPPAR="xcat.samp.par" #xcat config file
-                    OUTPUTPATH="./" #path to output
-                    PREFIX="" #prefix for xcat output
-                    
-                    ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-                    ROTATION="prone" #rotation of patient prone|supine|other
-                else
-                    #user variables
-                    XCAT=$(echo $3 | rev | cut -d'/' -f1 | rev) #xcat executable
-                    XCATPATH=${3//$XCAT/} #path to xcat directory
-                    SAMPPAR=$(echo $4 | rev | cut -d'/' -f1 | rev) #xcat config file
-                    SAMPPARPATH=${4//$SAMPPAR/} #path to xcat config file
-                    PREFIX=$(echo $5 | rev | cut -d'/' -f1 | rev) #prefix for xcat output
-                    OUTPUTPATH=${5//$PREFIX/} #path to output
-                    
-                    #if orientation and rotation arguments are given
-                    if [ $# -gt 6 ]
-                    then
-                        ORIENTATION=$6 #orientation of patient head_in|feet_in|other
-                        ROTATION=$7 #rotation of patient prone|supine|other
-                    else
-                        ORIENTATION="head_in" #orientation of patient head_in|feet_in|other
-                        ROTATION="prone" #rotation of patient prone|supine|other
-                    fi
+                    ORIENTATION=$4 #orientation of patient head_in|feet_in|other
+                    ROTATION=$5 #rotation of patient prone|supine|other
                 fi
             fi
         fi
