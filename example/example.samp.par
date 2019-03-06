@@ -4,11 +4,11 @@ atten_phan_each = 1	# attenuation_coeff_phantom_each_frame (1=save phantom to fi
 act_phan_ave = 0	# activity_phantom_average    (1=save , 0=don't save) see NOTE 1
 atten_phan_ave = 0	# attenuation_coeff_phantom_average  (1=save, 0=don't save) see NOTE 1
 
-motion_option = 0	# motion_option  (0=beating heart only, 1=respiratory motion only, 2=both motions) see NOTE 2
+motion_option = 1	# motion_option  (0=beating heart only, 1=respiratory motion only, 2=both motions) see NOTE 2
 
-out_period = 1		# output_period (SECS) (if <= 0, then output_period=time_per_frame*output_frames)
+out_period = 5		# output_period (SECS) (if <= 0, then output_period=time_per_frame*output_frames)
 time_per_frame = 0	# time_per_frame (SECS) (**IGNORED unless output_period<=0**)
-out_frames = 1		# output_frames (# of output time frames )
+out_frames = 6		# output_frames (# of output time frames )
 
 hrt_period = 1			# hrt_period (SECS) (length of beating heart cycle; normal = 1s) see NOTE 3 
 hrt_start_ph_index = 0.0	# hrt_start_phase_index (range=0 to 1; ED=0, ES=0.4) see NOTE 3 
@@ -32,7 +32,7 @@ hrt_t4 = 0.193		# sets the duration from end of quiet phase to reduced filling, 
 resp_period = 5                 # resp_period (SECS) (length of respiratory cycle; normal breathing = 5s) see NOTE 3
 resp_start_ph_index = 0.0	# resp_start_phase_index (range=0 to 1, full exhale= 0.0, full inhale=0.4) see NOTE 3
 max_diaphragm_motion = 2.0	# max_diaphragm_motion  (extent in cm's of diaphragm motion; normal breathing = 2 cm) see NOTE 4
-max_AP_exp = 0.5		# max_AP_expansion  (extent in cm's of the AP expansion of the chest; normal breathing = 1.2 cm) see NOTE 4
+max_AP_exp = 1.2		# max_AP_expansion  (extent in cm's of the AP expansion of the chest; normal breathing = 1.2 cm) see NOTE 4
 dia_filename = diaphragm_curve.dat	#name of curve defining diaphragm motion during respiration
 ap_filename = ap_curve.dat     		#name of curve defining chest anterior-posterior motion during respiration
 
@@ -146,7 +146,7 @@ ldiaph_scale = 1.0		# height of left diaphragm dome (0 = flat, 1 = original heig
 
 frac_H2O = 0.5	# fraction (by weight) of water in wet bone and wet spine (used to calc. atten coeff)
 
-thickness_skin = 0		# thickness of the skin (cm), if greater than 0, it adds a skin layer to the body
+thickness_skin = 0.2		# thickness of the skin (cm), if greater than 0, it adds a skin layer to the body
 
 marrow_flag = 1			# render marrow (0 = no, 1 = yes)
 thickness_skull = 0.2		# thickness skull (cm)
@@ -213,7 +213,7 @@ slice_width = 0.3125		# slice width (cm);
 array_size = 256	# array size   
 subvoxel_index = 1	# subvoxel_index (=1,2,3,4 -> 1,8,27,64 subvoxels/voxel, respectively) 
 startslice = 1	# start_slice;  
-endslice = 500		# end_slice; 
+endslice = 501		# end_slice; 
 
 d_ZY_rotation = 0	# change in zy_rotation (beta) in deg. (0); see NOTE 8
 d_XZ_rotation = 0	# change in xz_rotation ( phi) in deg. (0); 
