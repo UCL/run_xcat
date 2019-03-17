@@ -40,7 +40,7 @@ generate_general_header()
     HEADERSCALINGFACTOR3="\nscaling factor (mm/pixel) [3] := "
     HEADEREND="\nnumber of time frames := 1\n!END OF INTERFILE :="
     
-    #aquires variables from xcat config file and multiplied by 10 are being converted from cm in the xcat config file to mm for the interfile header $1=$OUTPUTPATH$SAMPPAR
+    #aquires variables from xcat config file and multiplied by 10 are being converted from cm in the xcat config file to mm for the interfile header $1=$SAMPPARPATH$SAMPPAR
     ARRAYSIZE=$(echo $(grep "array_size = " $1) | cut -d' ' -f3)
     PIXELWIDTH=$(echo "$(echo $(grep "pixel_width = " $1) | cut -d' ' -f3)*10" | bc -l)
     ENDSLICE=$(echo $(grep "endslice = " $1) | cut -d' ' -f3)
@@ -203,6 +203,7 @@ main()
     rm -f *.bin
     rm -f *.hv
     rm -f *log*
+    rm -f *signal*
     
     if [ $DEBUG = false ]
     then
@@ -216,7 +217,7 @@ main()
     fi
         
     #store output from generate_general_header
-    GENERALHEADER=$(generate_general_header $OUTPUTPATH$SAMPPAR $ORIENTATION $ROTATION) #constructs what is the same for every interfile header
+    GENERALHEADER=$(generate_general_header $SAMPPARPATH$SAMPPAR $ORIENTATION $ROTATION) #constructs what is the same for every interfile header
     
     #output header files for each image both activity and attenuation
     output_headers $DEBUG $OUTPUT "$GENERALHEADER" $PREFIX
