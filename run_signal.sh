@@ -13,7 +13,27 @@ main()
     
     cd $OUTPUTPATH
     
-    rm -f *signal*
+    rm -f *signal
+    
+    TEXT=$(grep "Current heart phase index =" $LOGPATH)
+    
+    OUTPUT=${TEXT//" "/}
+    OUTPUT=${OUTPUT//"Currentheartphaseindex="/}
+    
+    for i in $OUTPUT
+    do
+        echo -e $(echo $i | cut -d'(' -f1) >> $PREFIX"_heart_phase_signal"
+    done
+    
+    TEXT=$(grep "Current resp phase index  =" $LOGPATH)
+    
+    OUTPUT=${TEXT//" "/}
+    OUTPUT=${OUTPUT//"Currentrespphaseindex="/}
+    
+    for i in $OUTPUT
+    do
+        echo -e $(echo $i | cut -d'(' -f1) >> $PREFIX"_resp_phase_signal"
+    done
     
     TEXT=$(grep "diaphragm motion    =" $LOGPATH)
     

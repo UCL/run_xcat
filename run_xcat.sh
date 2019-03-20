@@ -202,8 +202,8 @@ main()
     #remove any previous output
     rm -f *.bin
     rm -f *.hv
-    rm -f *log*
-    rm -f *signal*
+    rm -f *log
+    rm -f *signal
     
     if [ $DEBUG = false ]
     then
