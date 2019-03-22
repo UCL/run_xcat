@@ -35,6 +35,7 @@ phantom_directory()
     export OUTPUTPATH=$OUTPUTPATH
     
     export -f sum
+    
     find $PHANTOMPATH -name *act* -execdir bash -c 'sum {}' \;
     find $PHANTOMPATH -name *atn* -execdir bash -c 'sum {}' \;
 }
@@ -42,8 +43,10 @@ phantom_directory()
 main()
 {    
     export STIR=$1
+    
     export -f phantom_directory
     export -f sum
+    
     find ./ -name *phantom -execdir bash -c 'phantom_directory {}' \;
     
     exit 0

@@ -1,3 +1,5 @@
 *.bin
 *.hv
 *log
+*signal
+*nifty_reg_resp
