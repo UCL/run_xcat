@@ -9,6 +9,8 @@ run_xcat()
     SAMPPAR=$(echo $1 | rev | cut -d'/' -f1 | rev) #xcat executable
     SAMPPARPATH=${1//$SAMPPAR/} #path to xcat directory
     
+    echo $XCATPATH $SAMPPARPATH$SAMPPAR $SAMPPARPATH '\n'
+    
     $RUNXCATPATH $XCATPATH $SAMPPARPATH$SAMPPAR $SAMPPARPATH
 }
 
@@ -16,6 +18,8 @@ run_lesion()
 {
     RUNLESIONPATH=${1/"./"/$(pwd)"/"}
     STIRPATH=${2/"./"/$(pwd)"/"}
+    
+    echo $RUNLESIONPATH $STIRPATH '\n'
     
     $RUNLESIONPATH $STIRPATH
 }

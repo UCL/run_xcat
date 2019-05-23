@@ -14,6 +14,8 @@ sum()
     
     if [ $(echo $ACTPREFIX | cut -d'.' -f2) == "hv" ]
     then
+        echo $STIR $OUTPUTACTPATH $ACTPATH $LESIONACTPATH '\n'
+        
         $STIR $OUTPUTACTPATH $ACTPATH $LESIONACTPATH
     fi
 }
